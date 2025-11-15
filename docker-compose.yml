@@ -1,0 +1,97 @@
+services:
+  # PostgreSQL
+  postgres:
+    image: postgres:15
+    container_name: med-report-flow-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: med-report-flow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - med-report-flow-network
+
+  # Redpanda (Kafka-compatible broker)
+  redpanda:
+    image: redpandadata/redpanda:latest
+    container_name: med-report-flow-redpanda
+    restart: always
+    # comando ajustado para expor listeners internos (9092) e externos (19092)
+    command:
+      - redpanda
+      - start
+      - --smp
+      - "1"
+      - --overprovisioned
+      - --node-id
+      - "0"
+      - --check=false
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:9092,OUTSIDE://0.0.0.0:19092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:9092,OUTSIDE://localhost:19092
+      - --pandaproxy-addr
+      - 0.0.0.0:8082
+      - --advertise-pandaproxy-addr
+      - localhost:8082
+    ports:
+      - "9092:9092"   # uso interno pela rede docker (serviços no compose podem usar redpanda:9092)
+      - "19092:19092" # uso externo (por ex. IDE, apps fora do compose) -> localhost:19092
+      - "8082:8082"   # Pandaproxy (REST proxy)
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+    healthcheck:
+      test: ["CMD", "bash", "-c", "rpk status >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks:
+      - med-report-flow-network
+
+  # Redpanda Console (UI)
+  redpanda-console:
+    image: redpandadata/console:latest
+    container_name: med-report-flow-redpanda-console
+    restart: always
+    environment:
+      # dentro da rede docker deve apontar para redpanda:9092
+      - KAFKA_BROKERS=redpanda:9092
+      - REDPANDA_BROKERS=redpanda:9092
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redpanda
+    networks:
+      - med-report-flow-network
+
+  # One-shot: cria tópicos iniciais necessários (ex: expense.status.updated)
+  kafka-init:
+    image: redpandadata/redpanda:latest
+    container_name: med-report-flow-kafka-init
+    restart: "no"
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    entrypoint:
+      - bash
+      - -c
+      - |
+        # tenta criar o tópico (com timeout). Se já existir, ignora.
+        for i in {1..30}; do
+          rpk topic create expense.status.updated --partitions 1 --replicas 1 && break || echo "esperando redpanda ($i/30)..." && sleep 2
+        done
+        echo "kafka-init finalizado"
+    networks:
+      - med-report-flow-network
+
+networks:
+  med-report-flow-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redpanda_data:
