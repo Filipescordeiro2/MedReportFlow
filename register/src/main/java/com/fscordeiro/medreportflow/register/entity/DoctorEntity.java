@@ -24,7 +24,7 @@ public class DoctorEntity {
     private String email;
     private String phone;
     private String typeRegulatory;
-    private Integer numberRegulatory;
+    private String numberRegulatory;
     private String gender;
     private LocalDate birthDate;
     private Integer age;
