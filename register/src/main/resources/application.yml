@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: med-report-flow
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/med-report-flow
+    username: admin
+    password: admin123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # altere para 'none' ou 'validate' em produção
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:19092   # Porta externa do Redpanda
+    consumer:
+      group-id: med-report-flow-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+logging:
+  level:
+    org.springframework.kafka: INFO
+    org.apache.kafka: INFO
+server:
+  port: 8083
