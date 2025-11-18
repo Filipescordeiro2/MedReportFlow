@@ -28,7 +28,6 @@ public class DoctorEntity {
     private String gender;
     private LocalDate birthDate;
     private Integer age;
-    private String specialty;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
