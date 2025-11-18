@@ -21,7 +21,7 @@ public record DoctorRegisterRequest(@CPF(message = "cpf is invalid")
                                     String phone,
                                     @NotBlank(message = "typeRegulatory is required")
                                     String typeRegulatory,
-                                    @NotBlank(message = "numberRegulatory is required")
+                                    @NotNull(message = "numberRegulatory is required")
                                     Integer numberRegulatory,
                                     @NotNull(message = "gender is required")
                                     String gender,

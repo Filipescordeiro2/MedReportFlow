@@ -20,7 +20,7 @@ public class DoctorServiceImp implements DoctorService {
         try {
             doctorRepository.save(doctorMapper.toDoctorEntity(request));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return doctorMapper.toDoctorRegisterResponse();
     }
