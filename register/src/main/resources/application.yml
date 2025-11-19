@@ -10,11 +10,11 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # altere para 'none' ou 'validate' em produção
+      ddl-auto: update   # altere para 'none' ou 'validate' em produï¿½ï¿½o
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: false
 
   kafka:
     bootstrap-servers: localhost:19092   # Porta externa do Redpanda
