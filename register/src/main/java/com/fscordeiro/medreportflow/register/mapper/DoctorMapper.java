@@ -22,6 +22,7 @@ public class DoctorMapper {
                 .gender(request.gender())
                 .birthDate(request.birthDate())
                 .numberRegulatory(request.numberRegulatory())
+                .state(request.state())
                 .build();
     }
 
@@ -40,6 +41,7 @@ public class DoctorMapper {
                 .name(doctorEntity.getName())
                 .email(doctorEntity.getEmail())
                 .phone(doctorEntity.getPhone())
+                .state(doctorEntity.getState())
                 .typeRegulatory(doctorEntity.getTypeRegulatory())
                 .numberRegulatory(maskedLabel(doctorEntity.getNumberRegulatory()))
                 .gender(doctorEntity.getGender())

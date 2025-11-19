@@ -23,6 +23,7 @@ public class DoctorEntity {
     private String name;
     private String email;
     private String phone;
+    private String state;
     private String typeRegulatory;
     private String numberRegulatory;
     private String gender;
