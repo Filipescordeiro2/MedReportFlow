@@ -15,9 +15,9 @@ public class NumberRegulatoryExistsValidation implements DoctorValidation {
     @Override
     public void validate(DoctorRegisterRequest request) {
         doctorRepository.findByNumberRegulatoryAndStateAndTypeRegulatory(
-                request.numberRegulatory(),
-                request.state(),
-                request.typeRegulatory()).ifPresent(doctor -> {
+                request.regulatory().numberRegulatory(),
+                request.regulatory().state(),
+                request.regulatory().typeRegulatory()).ifPresent(doctor -> {
             throw new BusinessException("There is already a TypeRegulatory and NumberRegulatory and State registration for this doctor");
         });
     }
