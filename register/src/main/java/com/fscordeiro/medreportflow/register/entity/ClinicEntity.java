@@ -6,41 +6,40 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
 @Builder
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@Table(name = "doctor-db")
-public class DoctorEntity {
+@NoArgsConstructor
+@Table(name = "clinic-db")
+public class ClinicEntity {
 
     @Id
-    private String cpf;
+    private String cnpj;
 
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-    private List<ClinicDoctorEntity> clinics;
+    @OneToMany(mappedBy = "clinic", cascade = CascadeType.ALL)
+    private List<ClinicDoctorEntity> doctors;
 
     private String name;
-    private String email;
+    private String description;
     private String phone;
-    private String state;
-    private String typeRegulatory;
-    private String numberRegulatory;
-    private String gender;
-    private LocalDate birthDate;
-    private Integer age;
+    private String email;
 
+    private String address;
+    private String city;
+    private String state;
+    private String zip;
+    private String country;
+
+    private Boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Boolean active;
 
     @PrePersist
     public void prePersist() {
-        age = LocalDateTime.now().getYear() - birthDate.getYear();
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         active = true;
