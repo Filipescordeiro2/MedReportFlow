@@ -2,7 +2,9 @@ package com.fscordeiro.medreportflow.register.service.imp;
 
 import com.fscordeiro.medreportflow.register.dto.request.ClinicRegisterRequest;
 import com.fscordeiro.medreportflow.register.dto.response.ClinicRegisterResponse;
+import com.fscordeiro.medreportflow.register.dto.response.ClinicReponse;
 import com.fscordeiro.medreportflow.register.exception.BusinessException;
+import com.fscordeiro.medreportflow.register.exception.NotFoundException;
 import com.fscordeiro.medreportflow.register.mapper.ClinicMapper;
 import com.fscordeiro.medreportflow.register.repository.ClinicRepository;
 import com.fscordeiro.medreportflow.register.service.ClinicService;
@@ -26,5 +28,11 @@ public class ClinicServiceImp implements ClinicService {
             throw new BusinessException(e.getMessage());
         }
         return clinicMapper.toClinicRegisterResponse();
+    }
+
+    @Override
+    public ClinicReponse getClinic(String cnpj) {
+        return clinicMapper.toClinicReponse(clinicRepository.findById(cnpj)
+                .orElseThrow(()-> new NotFoundException("Clinic not found")));
     }
 }
