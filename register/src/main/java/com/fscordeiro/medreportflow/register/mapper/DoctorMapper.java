@@ -3,6 +3,7 @@ package com.fscordeiro.medreportflow.register.mapper;
 import com.fscordeiro.medreportflow.register.dto.request.DoctorRegisterRequest;
 import com.fscordeiro.medreportflow.register.dto.response.DoctorRegisterResponse;
 import com.fscordeiro.medreportflow.register.dto.response.DoctorResponse;
+import com.fscordeiro.medreportflow.register.dto.response.RegulatoryResponse;
 import com.fscordeiro.medreportflow.register.entity.DoctorEntity;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +19,11 @@ public class DoctorMapper {
                 .phone(request.phone())
                 .name(request.name())
                 .email(request.email())
-                .typeRegulatory(request.typeRegulatory())
+                .typeRegulatory(request.regulatory().typeRegulatory())
+                .numberRegulatory(request.regulatory().numberRegulatory())
+                .state(request.regulatory().state())
                 .gender(request.gender())
                 .birthDate(request.birthDate())
-                .numberRegulatory(request.numberRegulatory())
-                .state(request.state())
                 .build();
     }
 
@@ -41,9 +42,12 @@ public class DoctorMapper {
                 .name(doctorEntity.getName())
                 .email(doctorEntity.getEmail())
                 .phone(doctorEntity.getPhone())
-                .state(doctorEntity.getState())
-                .typeRegulatory(doctorEntity.getTypeRegulatory())
-                .numberRegulatory(maskedLabel(doctorEntity.getNumberRegulatory()))
+                .regulatory(RegulatoryResponse
+                        .builder()
+                        .state(doctorEntity.getState())
+                        .typeRegulatory(doctorEntity.getTypeRegulatory())
+                        .numberRegulatory(maskedLabel(doctorEntity.getNumberRegulatory()))
+                        .build())
                 .gender(doctorEntity.getGender())
                 .birthDate(doctorEntity.getBirthDate())
                 .age(doctorEntity.getAge())
