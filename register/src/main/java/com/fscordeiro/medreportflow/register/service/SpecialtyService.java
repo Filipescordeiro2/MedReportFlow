@@ -4,9 +4,8 @@ import com.fscordeiro.medreportflow.register.dto.request.SpecialtyRegisterReques
 import com.fscordeiro.medreportflow.register.dto.response.SpecialtyRegisterResponse;
 import com.fscordeiro.medreportflow.register.dto.response.SpecialtyResponse;
 
-import java.util.UUID;
 
 public interface SpecialtyService {
     public SpecialtyRegisterResponse createSpecialty(SpecialtyRegisterRequest specialtyRegisterRequest);
-    public SpecialtyResponse getSpecialty(UUID specialtyId);
+    public SpecialtyResponse getSpecialty(String specialty);
 }

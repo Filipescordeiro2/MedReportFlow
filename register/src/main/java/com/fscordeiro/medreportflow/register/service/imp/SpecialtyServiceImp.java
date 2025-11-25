@@ -38,8 +38,8 @@ public class SpecialtyServiceImp implements SpecialtyService {
     }
 
     @Override
-    public SpecialtyResponse getSpecialty(UUID specialtyId) {
-        return specialtyMapper.toSpecialtyResponse(specialtyRepository.findById(specialtyId)
+    public SpecialtyResponse getSpecialty(String specialty) {
+        return specialtyMapper.toSpecialtyResponse(specialtyRepository.findById(specialty)
                 .orElseThrow(()-> new NotFoundException("Specialty not found")));
     }
 }
