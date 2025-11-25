@@ -7,32 +7,41 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Data
 @Builder
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-@Table(name = "specialty-db")
-public class SpecialtyEntity {
+@NoArgsConstructor
+@Table(name = "docto-specialty-db")
+public class DoctorSpecialtyEntity {
 
     @Id
-    private String specialty;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
-    private String description;
+    @ManyToOne
+    @JoinColumn(name = "doctor_cpf", nullable = false)
+    private DoctorEntity doctor;
 
+    @ManyToOne
+    @JoinColumn(name = "clinic_cnpj", nullable = false)
+    private SpecialtyEntity specialty;
+
+    private String specialtyDescription;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean active;
 
-    @PrePersist
+    @PrePersist()
     public void prePersist() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
         active = true;
     }
 
-    @PreUpdate
+    @PreUpdate()
     public void preUpdate() {
         updatedAt = LocalDateTime.now();
     }

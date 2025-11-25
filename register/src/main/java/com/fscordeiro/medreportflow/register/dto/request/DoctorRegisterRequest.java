@@ -8,6 +8,7 @@ import lombok.Builder;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 public record DoctorRegisterRequest(@CPF(message = "cpf is invalid")
@@ -26,5 +27,9 @@ public record DoctorRegisterRequest(@CPF(message = "cpf is invalid")
                                     LocalDate birthDate,
                                     @Valid
                                     @NotNull(message = "regulatory is required")
-                                    RegulatoryRequest regulatory) {
+                                    RegulatoryRequest regulatory,
+                                    @Valid
+                                    List<LinkedRequest>linked,
+                                    @Valid
+                                    List<LinkedSpecialtyRequest>linkedSpecialty) {
 }

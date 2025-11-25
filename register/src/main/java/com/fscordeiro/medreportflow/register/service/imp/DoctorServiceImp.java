@@ -3,10 +3,15 @@ package com.fscordeiro.medreportflow.register.service.imp;
 import com.fscordeiro.medreportflow.register.dto.request.DoctorRegisterRequest;
 import com.fscordeiro.medreportflow.register.dto.response.DoctorRegisterResponse;
 import com.fscordeiro.medreportflow.register.dto.response.DoctorResponse;
+import com.fscordeiro.medreportflow.register.entity.DoctorEntity;
 import com.fscordeiro.medreportflow.register.exception.BusinessException;
 import com.fscordeiro.medreportflow.register.exception.NotFoundException;
+import com.fscordeiro.medreportflow.register.mapper.ClinicDoctorMapper;
 import com.fscordeiro.medreportflow.register.mapper.DoctorMapper;
+import com.fscordeiro.medreportflow.register.mapper.DoctorSpecialtyMapper;
+import com.fscordeiro.medreportflow.register.repository.ClinicDoctorRepository;
 import com.fscordeiro.medreportflow.register.repository.DoctorRepository;
+import com.fscordeiro.medreportflow.register.repository.DoctorSpecialtyRepository;
 import com.fscordeiro.medreportflow.register.service.DoctorService;
 import com.fscordeiro.medreportflow.register.strategy.doctor.DoctorValidationExecutor;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +24,10 @@ import org.springframework.stereotype.Service;
 public class DoctorServiceImp implements DoctorService {
 
     private final DoctorRepository doctorRepository;
+    private final ClinicDoctorRepository clinicDoctorRepository;
+    private final DoctorSpecialtyRepository doctorSpecialtyRepository;
+    private final ClinicDoctorMapper clinicDoctorMapper;
+    private final DoctorSpecialtyMapper doctorSpecialtyMapper;
     private final DoctorValidationExecutor validationExecutor;
     private final DoctorMapper doctorMapper;
 
@@ -27,7 +36,10 @@ public class DoctorServiceImp implements DoctorService {
         log.info("Initializing the service [DoctorServiceImp - createDoctor] - request: {}", request);
         try {
             validationExecutor.execute(request);
-            doctorRepository.save(doctorMapper.toDoctorEntity(request));
+            var doctor = doctorRepository.save(doctorMapper.toDoctorEntity(request));
+
+            linkDoctorToClinics(doctor, request);
+            linkDoctorToSpecialty(doctor, request);
         } catch (BusinessException | NotFoundException e){
             log.error("Error the service [DoctorServiceImp - createDoctor] - message:{}",e.getMessage());
             throw e;
@@ -49,5 +61,25 @@ public class DoctorServiceImp implements DoctorService {
 
         return doctorMapper.toDoctorResponse(doctor);
     }
+
+    private void linkDoctorToClinics(DoctorEntity doctor, DoctorRegisterRequest request) {
+        if (request.linked() == null || request.linked().isEmpty()) {
+            return;
+        }
+        var clinicLinks = clinicDoctorMapper.toClinicDoctorEntities(doctor, request.linked());
+        clinicDoctorRepository.saveAll(clinicLinks);
+        log.info("Linked {} clinics to doctor {}", clinicLinks.size(), doctor.getCpf());
+    }
+
+    private void linkDoctorToSpecialty(DoctorEntity doctor, DoctorRegisterRequest request) {
+        if (request.linkedSpecialty()== null || request.linkedSpecialty().isEmpty()) {
+            return;
+        }
+        var specialtyLinks = doctorSpecialtyMapper.toDoctorSpecialtyEntities(doctor, request.linkedSpecialty());
+        doctorSpecialtyRepository.saveAll(specialtyLinks);
+        log.info("Linked {} doctor to specialtys {}", specialtyLinks.size(), doctor.getCpf());
+    }
+
+
 
 }
