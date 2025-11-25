@@ -4,6 +4,7 @@ import com.fscordeiro.medreportflow.register.dto.request.ClinicRegisterRequest;
 import com.fscordeiro.medreportflow.register.dto.response.ClinicRegisterResponse;
 import com.fscordeiro.medreportflow.register.dto.response.ClinicReponse;
 import com.fscordeiro.medreportflow.register.service.ClinicService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class ClinicController {
     private final ClinicService clinicService;
 
     @PostMapping
-    public ClinicRegisterResponse registerClinic(@RequestBody ClinicRegisterRequest request) {
+    public ClinicRegisterResponse registerClinic(@Valid @RequestBody ClinicRegisterRequest request) {
         return clinicService.registerClinic(request);
     }
 

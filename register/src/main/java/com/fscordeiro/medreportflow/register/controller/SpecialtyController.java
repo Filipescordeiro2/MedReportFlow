@@ -22,8 +22,8 @@ public class SpecialtyController {
         return specialtyService.createSpecialty(request);
     }
 
-    @GetMapping("/{specialtyId}")
-    public SpecialtyResponse getSpecialty(@PathVariable UUID specialtyId) {
-        return specialtyService.getSpecialty(specialtyId);
+    @GetMapping("/{specialty}")
+    public SpecialtyResponse getSpecialty(@PathVariable String specialty) {
+        return specialtyService.getSpecialty(specialty);
     }
 }
